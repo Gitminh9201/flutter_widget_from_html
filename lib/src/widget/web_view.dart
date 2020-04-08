@@ -47,7 +47,7 @@ class WebView extends StatefulWidget {
 class _WebViewState extends State<WebView> {
   double _aspectRatio;
   _Issue37 _issue37;
-  lib.WebViewController _wvc;
+//  lib.WebViewController _wvc;
 
   String _firstFinishedUrl;
 
@@ -73,7 +73,7 @@ class _WebViewState extends State<WebView> {
     super.deactivate();
 
     if (widget.unsupportedWorkaroundForIssue37 == true) {
-      _wvc?.reload();
+//      _wvc?.reload();
     }
   }
 
@@ -86,21 +86,9 @@ class _WebViewState extends State<WebView> {
     super.dispose();
   }
 
-  Future<String> eval(String js) =>
-      _wvc?.evaluateJavascript(js)?.catchError((_) => '');
+  Future<String> eval(String js) =>null;
 
-  Widget _buildWebView() => lib.WebView(
-        initialUrl: widget.url,
-        javascriptMode: widget.js == true
-            ? lib.JavascriptMode.unrestricted
-            : lib.JavascriptMode.disabled,
-        key: Key(widget.url),
-        navigationDelegate: widget.interceptNavigationRequest != null
-            ? (req) => _interceptNavigationRequest(req)
-            : null,
-        onPageFinished: _onPageFinished,
-        onWebViewCreated: (c) => _wvc = c,
-      );
+  Widget _buildWebView() => Container();
 
   void _getDimensions() async {
     // TODO: enable codecov when `flutter drive --coverage` is available
@@ -119,22 +107,7 @@ class _WebViewState extends State<WebView> {
     if (changed && mounted) setState(() => _aspectRatio = r);
   }
 
-  lib.NavigationDecision _interceptNavigationRequest(
-      lib.NavigationRequest req) {
-    var intercepted = false;
 
-    if (widget.interceptNavigationRequest != null &&
-        _firstFinishedUrl != null &&
-        req.isForMainFrame &&
-        req.url != widget.url &&
-        req.url != _firstFinishedUrl) {
-      intercepted = widget.interceptNavigationRequest(req.url);
-    }
-
-    return intercepted
-        ? lib.NavigationDecision.prevent
-        : lib.NavigationDecision.navigate;
-  }
 
   void _onPageFinished(String url) {
     if (_firstFinishedUrl == null) _firstFinishedUrl = url;
@@ -157,7 +130,7 @@ class _Issue37 with WidgetsBindingObserver {
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.paused) {
-      wvs._wvc?.reload();
+//      wvs._wvc?.reload();
     }
   }
 }
